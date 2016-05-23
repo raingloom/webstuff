@@ -1,7 +1,60 @@
 <!DOCTYPE html>
+<!-- Thanks for reading the source! -->
 <html>
     <head>
-        <title>listen with your eyes</title>
+        <meta charset="utf-8">
+        <title>*thinkin*</title>
+        <script>
+          let seed = (new Date).getTime()
+          let states = [
+            String.fromCodePoint(0x1f4a7),//droplet
+            //String.fromCodePoint(0x1f322),//black droplet
+            String.fromCodePoint(160)//non-breaking space
+          ]
+          let nstates = states.length
+          let indices = []
+          let titleTargetLength = 6
+          let updateTitle = function () {
+            let s = ""
+            for (let i=0; i<titleTargetLength; i++) {
+              s += states[indices[i]]
+            }
+            document.title = s
+          }
+          let pattern = []
+          //randomize pattern
+          for (let i=0;i<titleTargetLength;i++) {
+            pattern.push(i)
+          }
+          for (let i=0;i<titleTargetLength;i++) {
+            let r = Math.round(Math.random()*titleTargetLength)
+            let t = pattern[r]
+            pattern[r] = pattern[i]
+            pattern[i] = t
+          }
+
+          //init indices
+          for (let i=0; i<titleTargetLength; i++) {
+            indices.push(pattern[i] % nstates)
+          }
+          //init title
+          updateTitle()
+
+          let patternI = 0
+          let loadingTitle = setInterval( function () {
+            let i = pattern[patternI]
+            indices[i]++
+            indices[i]%=nstates
+            updateTitle()
+            patternI++
+            patternI%=titleTargetLength
+          }, 200 )
+
+          let init = function () {
+            clearTimeout( loadingTitle )
+          }
+        </script>
+        <script defer src="require.min.js"></script>
     </head>
     <style>
         body, html {
@@ -15,7 +68,6 @@
             position:absolute;
         }
     </style>
-    <script defer src="rain/init.js"></script>
-    <body onload="RainSim.init()">
+    <body>
     </body>
 </html>
